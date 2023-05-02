@@ -38,7 +38,7 @@ export default StyleSheet.create({
     height: '18%',
   },
   button: {
-    backgroundColor: '#00FFFF',
+    backgroundColor: '#7645BF',
     padding: 15,
     borderRadius: 10,
     margin: 10,

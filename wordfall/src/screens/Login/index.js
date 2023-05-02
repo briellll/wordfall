@@ -7,18 +7,18 @@ export default function Login() {
     <ImageBackground source={require('../../../assets/background.png')} style={styles.background}>
         <View style={styles.overlay} />
         <View  style={styles.background}>
-            <TextInput placeholder='Email' autoCorrect={false}
+            <TextInput style={styles.input} placeholder='Email' autoCorrect={false}
             onChangeText={()=>{}}/>
 
-            <TextInput placeholder='Senha' autoCorrect={false}
+            <TextInput style={styles.input} placeholder='Senha' autoCorrect={false}
             onChangeText={()=>{}}/>
-
-            <TouchableOpacity>
-                <Text>Acessar</Text>
+    
+            <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonText}>Acessar</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity>
-                <Text>Criar Conta</Text>
+            <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttonText}>Criar Conta</Text>
             </TouchableOpacity>
 
         </View>

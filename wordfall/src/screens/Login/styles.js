@@ -14,5 +14,27 @@ export default StyleSheet.create({
     right: 0,
     backgroundColor: 'rgba(0,0,0,0.9)', // altere aqui para uma cor mais escura, se necessário
     opacity: 0.5,
-  }
+  },
+  button: {
+    backgroundColor: '#7645BF',
+    padding: 15,
+    borderRadius: 10,
+    margin: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  input: {
+    width: 300,
+    height: 40,
+    backgroundColor: 'white',
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
+
 });
