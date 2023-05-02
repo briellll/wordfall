@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, StatusBar, TouchableOpacity, ImageBackground } from 'react-native';
+import {Text, View, StatusBar, TouchableOpacity, ImageBackground } from 'react-native';
 import styles from './styles';
 
 export default function Home() {
