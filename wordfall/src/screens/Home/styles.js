@@ -16,7 +16,7 @@ export default StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
-    backgroundColor: 'rgba(0,0,0,0.9)', // altere aqui para uma cor mais escura, se necessário
+    backgroundColor: 'rgba(0,0,0,0.9)', // alterar aqui para uma cor mais escura
     opacity: 0.5,
   },
   title: {
