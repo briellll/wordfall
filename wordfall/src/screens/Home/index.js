@@ -8,22 +8,29 @@ export default function Home() {
     <View style={styles.container}>
       <Text style={styles.title}>wordfall</Text>
       <View style={styles.buttonsContainer}>
+
+        
         <TouchableOpacity style={styles.button} onPress={() =>{
-          //adicionar o codigo para iniciar/ir para um novo jogo
+          //adicionar o codigo para iniciar ir para um novo jogo
         }}>
           <Text style={styles.buttonText}> Novo Jogo </Text>
         </TouchableOpacity>
+
+
+        <TouchableOpacity style={styles.button} onPress={() =>{
+          //adicionar o codigo para ir a tela de pontução
+        }}>
+          <Text style={styles.buttonText}> Score </Text>
+        </TouchableOpacity>
+
 
         <TouchableOpacity style={styles.button} onPress={() =>{
           //adicionar o codigo para abrir configurações
         }}>
           <Text style={styles.buttonText}> Configurações </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={()=>{
-          //adicionar o codigo para carregar seu próprio texto
-        }}>
-          <Text style={styles.buttonText}> Carregar seu próprio texto </Text>
-        </TouchableOpacity>
+
+
       </View>
       <StatusBar style="auto" />
     </View>

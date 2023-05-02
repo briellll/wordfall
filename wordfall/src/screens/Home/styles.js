@@ -16,7 +16,7 @@ export default StyleSheet.create({
     left: 0,
     bottom: 0,
     right: 0,
-    backgroundColor: 'rgba(0,0,0,0.9)', // altere aqui para uma cor mais escura, se necessário
+    backgroundColor: 'rgba(0,0,0,0.9)', // altere aqui para uma cor mais escura no fundo, se necessário
     opacity: 0.5,
   },
   title: {
@@ -34,7 +34,7 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     position: 'absolute',
-    bottom: '20%',
+    bottom: '22%',
     height: '18%',
   },
   button: {
