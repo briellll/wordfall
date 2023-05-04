@@ -34,11 +34,11 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     position: 'absolute',
-    bottom: '20%',
+    bottom: '22%',
     height: '18%',
   },
   button: {
-    backgroundColor: '#00FFFF',
+    backgroundColor: '#7645BF',
     padding: 15,
     borderRadius: 10,
     margin: 10,
