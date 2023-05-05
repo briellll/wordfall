@@ -28,6 +28,7 @@ export default StyleSheet.create({
     fontSize: 88,
     fontWeight: 'bold',
     color: '#FAEBD7',
+    transform: [{scaleY: 1.8}],
   },
   buttonsContainer: {
     flexDirection: 'column',

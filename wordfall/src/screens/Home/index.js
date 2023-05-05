@@ -7,9 +7,11 @@ export default function Home() {
          <View style={styles.overlay} />
     <View style={styles.container}>
       <Text style={styles.title}>wordfall</Text>
+
+      
       <View style={styles.buttonsContainer}>
 
-        
+
         <TouchableOpacity style={styles.button} onPress={() =>{
           //adicionar o codigo para iniciar ir para um novo jogo
         }}>
