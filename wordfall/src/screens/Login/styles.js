@@ -6,6 +6,12 @@ export default StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  container: {
+    backgroundColor: 'rgba(255,255,255,0.5)',
+    borderRadius: 10,
+    padding: 20,
+  },
+
   overlay: {
     position: 'absolute',
     top: 0,
@@ -17,7 +23,7 @@ export default StyleSheet.create({
   },
   button: {
     backgroundColor: '#7645BF',
-    padding: 15,
+    padding: 8,
     borderRadius: 10,
     margin: 9,
     marginBottom: 5,
@@ -29,13 +35,14 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
   input: {
-    width: 300,
+    width: 350,
     height: 40,
     backgroundColor: 'white',
     paddingLeft: 10,
     paddingRight: 10,
     borderRadius: 10,
     marginBottom: 10,
+    opacity: 0.8,
   },
 
 });

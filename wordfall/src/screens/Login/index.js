@@ -7,12 +7,13 @@ export default function Login() {
     <ImageBackground source={require('../../../assets/background.png')} style={styles.background}>
         <View style={styles.overlay} />
         <View  style={styles.background}>
+            <View style={styles.container}>
             <TextInput style={styles.input} placeholder='Email' autoCorrect={false}
             onChangeText={()=>{}}/>
 
-            <TextInput style={styles.input} placeholder='Senha' autoCorrect={false}
+            <TextInput style={[styles.input, {marginBottom:40}]} placeholder='Senha' autoCorrect={false}
             onChangeText={()=>{}}/>
-    
+
             <TouchableOpacity style={styles.button}>
                 <Text style={styles.buttonText}>Acessar</Text>
             </TouchableOpacity>
@@ -20,7 +21,7 @@ export default function Login() {
             <TouchableOpacity style={styles.button}>
                 <Text style={styles.buttonText}>Criar Conta</Text>
             </TouchableOpacity>
-
+        </View>
         </View>
         </ImageBackground>
   );
