@@ -15,7 +15,7 @@ export default function Home() {
 
 
         <TouchableOpacity style={styles.button} onPress={() =>{
-          //adicionar o codigo para iniciar ir para um novo jogo
+          navigation.navigate('Play')
         }}>
           <Text style={styles.buttonText}> Novo Jogo </Text>
         </TouchableOpacity>
