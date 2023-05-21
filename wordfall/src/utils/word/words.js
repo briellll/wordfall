@@ -1,11 +1,3 @@
-const words = [
-    'palavra1',
-    'palavra2',
-    'palavra3',
-    'teste',
-    'lorem',
-    'noventa',
-    // Adicione mais palavras aqui
-  ];
+const words = ['apple', 'banana', 'carrot', 'dog', 'elephant', 'fox', 'grape', 'horse', 'ice', 'cream', 'jungle'];
 
-  export default words;
+export default words;
