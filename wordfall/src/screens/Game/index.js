@@ -1,6 +1,7 @@
 import React from 'react';
 import { View } from 'react-native';
 import Keyboard from '../../utils/keyboard';
+import styles from './styles';
 
 const Play = () => {
   const handleKeyPress = (key) => {
@@ -15,7 +16,4 @@ const Play = () => {
 };
 
 export default Play;
-
-
-
 
