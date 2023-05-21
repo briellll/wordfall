@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text } from 'react-native';
 import { generateWords } from '../../utils/word/random';
 import Keyboard from '../../utils/keyboard';
+import {styles} from './styles';
 
 const Play = () => {
   const [words, setWords] = useState([]);
@@ -64,44 +65,7 @@ const Play = () => {
   );
 };
 
-const { width } = Dimensions.get('window');
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  wordsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  word: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  letter: {
-    fontSize: 16,
-    marginRight: 8,
-  },
-  correct: {
-    color: 'green',
-  },
-  highlight: {
-    color: 'orange',
-  },
-  completed: {
-    color: 'green',
-  },
-});
-
 export default Play;
-
-
-
-
-
 
 
 

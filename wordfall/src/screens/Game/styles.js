@@ -1,29 +1,35 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
-const styles = StyleSheet.create({
+const { width } = Dimensions.get('window');
+
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#292c34',
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
   },
-  character: {
+  wordsContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 20,
+    alignItems: 'center',
   },
-  characterOut: {
-    color: 'white',
+  word: {
     fontSize: 16,
-    marginRight: 5,
+    marginBottom: 8,
   },
-  characterCurrent: {
+  letter: {
+    fontSize: 16,
+    marginRight: 8,
+  },
+  correct: {
     color: 'green',
-    fontSize: 16,
-    marginRight: 5,
+  },
+  highlight: {
+    color: 'orange',
+  },
+  completed: {
+    color: 'green',
   },
 });
 
-export default styles;
 
