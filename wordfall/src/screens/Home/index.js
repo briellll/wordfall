@@ -1,44 +1,32 @@
-import {Text, View, StatusBar, TouchableOpacity, ImageBackground } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, KeyboardAvoidingView, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styles from './styles';
+import logoIcon from '../../../assets/logohome.png';
+
+
+
+
 
 export default function Home() {
   const navigation = useNavigation();
   return (
-    <ImageBackground source={require('../../../assets/background.png')} style={styles.background}>
-         <View style={styles.overlay} />
-    <View style={styles.container}>
-      <Text style={styles.title}>wordfall</Text>
+    <KeyboardAvoidingView style={styles.container} behavior="padding">
+      <Image source={logoIcon} style={[styles.logo]} />
 
 
-      <View style={styles.buttonsContainer}>
+      <View style={styles.form}>
 
-
-        <TouchableOpacity style={styles.button} onPress={() =>{
-          navigation.navigate('Play')
-        }}>
-          <Text style={styles.buttonText}> Novo Jogo </Text>
+        <TouchableOpacity style={styles.button} onPress={() =>{navigation
+        .navigate('Play')}}>
+          <Text style={styles.submitText}>Novo Jogo</Text>
         </TouchableOpacity>
 
-
-        <TouchableOpacity style={styles.button} onPress={() =>{
-          //adicionar o codigo para abrir score
-        }}>
-          <Text style={styles.buttonText}> Score </Text>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.submitText}>Pontuação</Text>
         </TouchableOpacity>
-
-
-        <TouchableOpacity style={styles.button} onPress={() =>{
-          navigation.navigate('Settings')
-        }}>
-          <Text style={styles.buttonText}> Configurações </Text>
-        </TouchableOpacity>
-
 
       </View>
-      <StatusBar style="auto" />
-    </View>
-    </ImageBackground>
+    </KeyboardAvoidingView>
   );
 }
-
