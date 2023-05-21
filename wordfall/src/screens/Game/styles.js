@@ -30,6 +30,19 @@ export const styles = StyleSheet.create({
   completed: {
     color: 'green',
   },
+  characterContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+  characterOut: {
+    color: 'silver',
+  },
+  characterCurrent: {
+    backgroundColor: '#09d3ac',
+    paddingHorizontal: 8,
+  },
 });
 
 
