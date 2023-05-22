@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import Settings from '../wordfall/src/screens/Settings';
 import Home from '../wordfall/src/screens/Home';
 import Play from './src/screens/Game';
+import Score from './src/screens/Score';
 
 const Stack = createStackNavigator();
 
@@ -15,6 +16,7 @@ const App = () => {
                 <Stack.Screen name="Home" component={Home} options={{ headerShown: false }}/>
                 <Stack.Screen name="Settings" component={Settings} options={{ headerShown: false}}/>
                 <Stack.Screen name="Play" component={Play} options={{headerShown: false}}/>
+                <Stack.Screen name="Score" component={Score} options={{headerShown: false}}/>
             </Stack.Navigator>
         </NavigationContainer>
     );

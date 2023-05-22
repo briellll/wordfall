@@ -38,6 +38,14 @@ const Play = () => {
           setScore((prevScore) => prevScore + 1);
           setWordCount((prevCount) => prevCount + 1);
         }
+
+        if (highlightLetters.length === currentWord.length - 1) {
+          setWords((prevWords) => {
+            const updatedWords = [...prevWords];
+            updatedWords[highlightIndex] = `${updatedWords[highlightIndex]} `;
+            return updatedWords;
+          });
+        }
       }
     } else {
       setAccuracy((prevAccuracy) => prevAccuracy - 1);
@@ -62,7 +70,7 @@ const Play = () => {
             (index === highlightIndex && highlightLetters.length === word.length);
 
           return (
-            <Text key={index} style={styles.word}>
+            <Text key={index} style={[styles.word, isCompleted && styles.wordCompleted]}>
               {word.split('').map((letter, letterIndex) => {
                 const isCorrect = isHighlighted && letterIndex < highlightLetters.length;
                 const isHighlightLetter = isHighlighted && letterIndex === highlightLetters.length;
@@ -74,7 +82,6 @@ const Play = () => {
                       styles.letter,
                       isCorrect && styles.correct,
                       isHighlightLetter && styles.highlight,
-                      isCompleted && styles.completed,
                     ]}
                   >
                     {letter}
@@ -92,28 +99,6 @@ const Play = () => {
 };
 
 export default Play;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

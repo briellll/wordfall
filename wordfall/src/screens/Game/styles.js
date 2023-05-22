@@ -7,15 +7,34 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#292c34',
+  },
+  scoreContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+    paddingHorizontal: 16,
+    width: '100%',
+  },
+  scoreText: {
+    fontSize: 16,
+    color: 'white',
   },
   wordsContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    marginTop: 16,
   },
   word: {
-    fontSize: 16,
+    fontSize: 26, // Tamanho das palavras aumentado para 18
     marginBottom: 8,
+    color: 'white',
+  },
+  wordCompleted: {
+    color: '#999', // Cor das palavras finalizadas mais clara
   },
   letter: {
     fontSize: 16,
@@ -26,9 +45,6 @@ export const styles = StyleSheet.create({
   },
   highlight: {
     color: 'orange',
-  },
-  completed: {
-    color: 'green',
   },
   characterContainer: {
     alignItems: 'center',
@@ -44,5 +60,3 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
 });
-
-

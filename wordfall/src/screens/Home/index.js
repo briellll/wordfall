@@ -22,7 +22,8 @@ export default function Home() {
           <Text style={styles.submitText}>Novo Jogo</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity style={styles.button} onPress={()=>{navigation
+        .navigate('Score')}}>
           <Text style={styles.submitText}>Pontuação</Text>
         </TouchableOpacity>
 
