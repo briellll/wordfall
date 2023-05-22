@@ -18,13 +18,16 @@ const styles = StyleSheet.create({
   key: {
     backgroundColor: '#ffffff',
     borderRadius: 5,
-    padding: 10,
+    padding: 9.5,
     marginHorizontal: 5
   },
   text: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 5
+  },
+  spaceKey: {
+    width: 360,
   }
 });
 
