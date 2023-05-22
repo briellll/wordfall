@@ -1,12 +1,13 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import styles from './styles';
 
 const keyboardRows = [
   ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
   ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
   ['z', 'x', 'c', 'v', 'b', 'n', 'm'],
-  [' '], // Adicionando uma linha separada com um único elemento vazio para a barra de espaço
+  ['                                                      '], // Adicionando uma linha separada com um elemento vazio para a barra de espaço
 ];
 
 const Keyboard = ({ onPress }) => {
@@ -17,7 +18,10 @@ const Keyboard = ({ onPress }) => {
           <TouchableOpacity
             key={letter}
             style={[styles.key, letter === ' ' && styles.spaceKey]}
-            onPress={() => onPress(letter)}
+            onPress={() => {
+              onPress(letter);
+              Haptics.selectionAsync(); // Vibração ao tocar no botão
+            }}
           >
             <Text style={styles.text}>{letter}</Text>
           </TouchableOpacity>
@@ -30,3 +34,4 @@ const Keyboard = ({ onPress }) => {
 };
 
 export default Keyboard;
+
