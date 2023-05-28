@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyboardAvoidingView, View, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { KeyboardAvoidingView, View, Text, TouchableOpacity, Image } from 'react-native';
 
 import styles from './styles';
 import logoIcon from '../../../assets/user.png';
@@ -12,31 +12,8 @@ export default function Login() {
         <View style={styles.form}>
           <Image source={logoIcon} style={[styles.logo, { marginBottom: 20 }]} />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            keyboardType="email-address"
-            textContentType="emailAddress"
-            autoCapitalize="none"
-            autoCompleteType="email"
-            autoCorrect={false}
-            onChangeText={() => {}}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Senha"
-            //keyboardType="visible-password"
-            textContentType="password"
-            autoCapitalize="none"
-            autoCompleteType="password"
-            autoCorrect={false}
-            secureTextEntry={true}
-            onChangeText={() => {}}
-          />
-
           <TouchableOpacity style={styles.buttonSubmit}>
-            <Text style={styles.submitText}>Acessar</Text>
+            <Text style={styles.submitText}>Acessar com Google</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.buttonRegister}>
