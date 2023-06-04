@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { generateWords } from '../../utils/word/random';
 import Keyboard from '../../utils/keyboard';
 import { styles } from './styles';
+import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
 
 const Play = () => {
   const [words, setWords] = useState([]);
@@ -94,6 +96,32 @@ const Play = () => {
     setWpm(((wordCount + 1) / durationInMinutes).toFixed(2));
   };
 
+  useEffect(() => {
+    const saveScores = async () => {
+      if (isGameOver) {
+        // Obtém o ID salvo localmente
+        const userId = await AsyncStorage.getItem('userId');
+
+        try {
+          const firestore = getFirestore();
+          const userRef = doc(collection(firestore, 'teste'), userId);
+
+          await setDoc(userRef, {
+            score: score.toString(),
+            wpm: wpm.toString(),
+            accuracy: accuracy.toString(),
+          });
+
+          console.log('Pontuações salvas no Firestore com sucesso!');
+        } catch (error) {
+          console.error('Erro ao salvar as pontuações no Firestore:', error);
+        }
+      }
+    };
+
+    saveScores();
+  }, [isGameOver, score, wpm, accuracy]);
+
   return (
     <View style={styles.container}>
       {countdown >= 0 && (
@@ -101,9 +129,7 @@ const Play = () => {
           {countdown}
         </Text>
       )}
-      {isGameStarted && (
-        <Text style={styles.timerText}>{gameTimer}</Text>
-      )}
+      {isGameStarted && <Text style={styles.timerText}>{gameTimer}</Text>}
       {isGameStarted && (
         <View style={styles.scoreContainer}>
           <Text style={styles.scoreText}>Score: {score}</Text>
@@ -152,27 +178,9 @@ const Play = () => {
           <Text style={styles.scoreText}>Accuracy: {accuracy}%</Text>
         </View>
       )}
-      {showKeyboard && (
-        <Keyboard onPress={handleKeyPress} />
-      )}
+      {showKeyboard && <Keyboard onPress={handleKeyPress} />}
     </View>
   );
 };
 
 export default Play;
-
-
-
-
-
-
-
- //const handleKeyPress = (key) => {
-   // console.log(key); // Exemplo de ação ao pressionar uma tecla
-  //};
-
-  //return (
-   // <View style={styles.container}>
-     // <Keyboard onPress={handleKeyPress} />
-    //</View>
- // );
