@@ -7,10 +7,13 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } f
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../config';
 import { useNavigation } from '@react-navigation/native';
+import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [isLoginScreen, setIsLoginScreen] = useState(true);
   const navigation = useNavigation();
 
   const app = initializeApp(firebaseConfig);
@@ -19,8 +22,17 @@ export default function Login() {
   const handleCreateAccount = () => {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        console.log('Conta Criada!');
         const user = userCredential.user;
+
+        // Salvar ID do usuário e nickname na Cloud Firestore
+        const firestore = getFirestore();
+        const userRef = doc(collection(firestore, "teste"), user.uid);
+        setDoc(userRef, {
+          id: user.uid,
+          nickname: nickname
+        });
+
+        console.log('Conta Criada!');
         console.log(user);
         navigation.navigate('Home');
       })
@@ -44,34 +56,74 @@ export default function Login() {
       });
   };
 
+  const handleModeToggle = () => {
+    setIsLoginScreen(!isLoginScreen);
+  };
+
   return (
     <>
       <KeyboardAvoidingView style={styles.container} behavior="padding">
         <View style={styles.form}>
           <Image source={logoIcon} style={[styles.logo, { marginBottom: 20 }]} />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Email"
-            onChangeText={(text) => setEmail(text)}
-            value={email}
-          />
+          {isLoginScreen ? (
+            <>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                onChangeText={(text) => setEmail(text)}
+                value={email}
+              />
 
-          <TextInput
-            style={styles.input}
-            placeholder="Senha"
-            secureTextEntry
-            onChangeText={(text) => setPassword(text)}
-            value={password}
-          />
+              <TextInput
+                style={styles.input}
+                placeholder="Senha"
+                secureTextEntry
+                onChangeText={(text) => setPassword(text)}
+                value={password}
+              />
 
-          <TouchableOpacity onPress={handleSign} style={styles.buttonSubmit}>
-            <Text style={styles.submitText}>Login</Text>
-          </TouchableOpacity>
+              <TouchableOpacity onPress={handleSign} style={styles.buttonSubmit}>
+                <Text style={styles.submitText}>Login</Text>
+              </TouchableOpacity>
 
-          <TouchableOpacity onPress={handleCreateAccount} style={styles.buttonRegister}>
-            <Text style={styles.registerText}>Criar conta gratuita</Text>
-          </TouchableOpacity>
+              <TouchableOpacity onPress={handleModeToggle} style={styles.buttonRegister}>
+                <Text style={styles.registerText}>Não possui uma conta? Crie uma gratuita aqui</Text>
+              </TouchableOpacity>
+            </>
+          ) : (
+            <>
+              <TextInput
+                style={styles.input}
+                placeholder="Email"
+                onChangeText={(text) => setEmail(text)}
+                value={email}
+              />
+
+              <TextInput
+                style={styles.input}
+                placeholder="Senha"
+                secureTextEntry
+                onChangeText={(text) => setPassword(text)}
+                value={password}
+              />
+
+              <TextInput
+                style={styles.input}
+                placeholder="Nickname"
+                onChangeText={(text) => setNickname(text)}
+                value={nickname}
+              />
+
+              <TouchableOpacity onPress={handleCreateAccount} style={styles.buttonSubmit}>
+                <Text style={styles.submitText}>Gerar acesso</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={handleModeToggle} style={styles.buttonRegister}>
+                <Text style={styles.registerText}>Voltar para o Login</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </KeyboardAvoidingView>
     </>
