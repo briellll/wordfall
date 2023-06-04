@@ -24,7 +24,7 @@ export default function Login() {
       .then((userCredential) => {
         const user = userCredential.user;
 
-        // Salvar ID do usuário e nickname na Cloud Firestore
+        // Salvar ID do usuário e nickname no Cloud Firestore
         const firestore = getFirestore();
         const userRef = doc(collection(firestore, "teste"), user.uid);
         setDoc(userRef, {
@@ -32,9 +32,14 @@ export default function Login() {
           nickname: nickname
         });
 
-        console.log('Conta Criada!');
-        console.log(user);
-        navigation.navigate('Home');
+        // Exibir alerta de conta criada com sucesso
+        Alert.alert(
+          'Sucesso',
+          'Sua conta foi criada com sucesso!',
+          [
+            { text: 'Voltar para o Login', onPress: () => setIsLoginScreen(true) }
+          ]
+        );
       })
       .catch(error => {
         console.log(error);
