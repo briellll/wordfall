@@ -1,33 +1,52 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, SafeAreaView } from 'react-native';
+import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import styles from './styles';
 
 const Score = () => {
-  const [activeTab, setActiveTab] = React.useState('local');
+  const [activeTab, setActiveTab] = useState('local');
+  const [localScores, setLocalScores] = useState([]);
+  const [globalScores, setGlobalScores] = useState([]);
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
 
-  const localScores = [
-    { nick: 'Nick1', wpm: 100, accuracy: '95%', score: 500 },
-    { nick: 'Nick2', wpm: 90, accuracy: '85%', score: 400 },
-    { nick: 'Nick3', wpm: 80, accuracy: '75%', score: 300 },
-    { nick: 'Nick4', wpm: 70, accuracy: '65%', score: 200 },
-    { nick: 'Nick5', wpm: 60, accuracy: '55%', score: 100 },
-  ];
+  useEffect(() => {
+    const fetchLocalScores = async () => {
+      try {
+        const firestore = getFirestore();
+        const scoresSnapshot = await getDocs(collection(firestore, 'teste'));
 
-  const globalScores = [
-    { nick: 'Nick1', wpm: 200, accuracy: '98%', score: 1500 },
-    { nick: 'Nick2', wpm: 180, accuracy: '96%', score: 1400 },
-    { nick: 'Nick3', wpm: 160, accuracy: '94%', score: 1300 },
-    { nick: 'Nick4', wpm: 140, accuracy: '92%', score: 1200 },
-    { nick: 'Nick5', wpm: 120, accuracy: '90%', score: 1100 },
-  ];
+        const scores = scoresSnapshot.docs.map((doc) => doc.data());
+        setLocalScores(scores);
+      } catch (error) {
+        console.error('Erro ao obter as pontuações locais:', error);
+      }
+    };
+
+    const fetchGlobalScores = async () => {
+      try {
+        const firestore = getFirestore();
+        const scoresSnapshot = await getDocs(collection(firestore, 'teste'));
+
+        const scores = scoresSnapshot.docs.map((doc) => doc.data());
+        setGlobalScores(scores);
+      } catch (error) {
+        console.error('Erro ao obter as pontuações globais:', error);
+      }
+    };
+
+    if (activeTab === 'local') {
+      fetchLocalScores();
+    } else if (activeTab === 'global') {
+      fetchGlobalScores();
+    }
+  }, [activeTab]);
 
   const renderScoreItem = ({ item }) => (
     <View style={styles.scoreItem}>
-      <Text style={styles.scoreText}>{item.nick}</Text>
+      <Text style={styles.scoreText}>{item.nickname}</Text>
       <Text style={styles.scoreText}>{item.wpm}</Text>
       <Text style={styles.scoreText}>{item.accuracy}</Text>
       <Text style={styles.scoreText}>{item.score}</Text>
@@ -87,6 +106,5 @@ const Score = () => {
     </SafeAreaView>
   );
 };
-
 
 export default Score;
