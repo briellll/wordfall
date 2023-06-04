@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { generateWords } from '../../utils/word/random';
 import Keyboard from '../../utils/keyboard';
 import { styles } from './styles';
@@ -13,17 +13,56 @@ const Play = () => {
   const [wordCount, setWordCount] = useState(0);
   const [wpm, setWpm] = useState(0);
   const [accuracy, setAccuracy] = useState(100);
+  const [countdown, setCountdown] = useState(3);
+  const [isGameStarted, setIsGameStarted] = useState(false);
+  const [gameTimer, setGameTimer] = useState(5);
+  const [isGameOver, setIsGameOver] = useState(false);
+  const [showKeyboard, setShowKeyboard] = useState(true);
 
   useEffect(() => {
     setWords(generateWords(5));
   }, []);
 
-  const handleKeyPress = (key) => {
-    const currentWord = words[highlightIndex];
+  useEffect(() => {
+    let countdownTimer;
 
-    if (!startTime) {
+    if (countdown > 0) {
+      countdownTimer = setTimeout(() => {
+        setCountdown((prevCountdown) => prevCountdown - 1);
+      }, 1000);
+    } else if (countdown === 0) {
+      setCountdown(-1);
+      setGameTimer(5);
+      setIsGameStarted(true);
       setStartTime(Date.now());
     }
+
+    return () => clearTimeout(countdownTimer);
+  }, [countdown]);
+
+  useEffect(() => {
+    let gameTimerInterval;
+
+    if (isGameStarted && gameTimer > 0) {
+      gameTimerInterval = setInterval(() => {
+        setGameTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+    } else if (gameTimer === 0) {
+      clearInterval(gameTimerInterval);
+      setIsGameStarted(false);
+      setIsGameOver(true);
+      setShowKeyboard(false);
+    }
+
+    return () => clearInterval(gameTimerInterval);
+  }, [gameTimer, isGameStarted]);
+
+  const handleKeyPress = (key) => {
+    if (!isGameStarted) {
+      return; // Ignorar as teclas pressionadas até o início do jogo
+    }
+
+    const currentWord = words[highlightIndex];
 
     if (key === currentWord.charAt(highlightLetters.length)) {
       setHighlightLetters((prevLetters) => [...prevLetters, key]);
@@ -57,51 +96,70 @@ const Play = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.scoreContainer}>
-        <Text style={styles.scoreText}>Score: {score}</Text>
-        <Text style={styles.scoreText}>WPM: {wpm}</Text>
-        <Text style={styles.scoreText}>Accuracy: {accuracy}%</Text>
-      </View>
-      <View style={styles.wordsContainer}>
-        {words.map((word, index) => {
-          const isHighlighted = index === highlightIndex;
-          const isCompleted =
-            index < highlightIndex ||
-            (index === highlightIndex && highlightLetters.length === word.length);
+      {countdown >= 0 && (
+        <Text style={[styles.countdownText, countdown === 0 && styles.countdownHighlight]}>
+          {countdown}
+        </Text>
+      )}
+      {isGameStarted && (
+        <Text style={styles.timerText}>{gameTimer}</Text>
+      )}
+      {isGameStarted && (
+        <View style={styles.scoreContainer}>
+          <Text style={styles.scoreText}>Score: {score}</Text>
+          <Text style={styles.scoreText}>WPM: {wpm}</Text>
+          <Text style={styles.scoreText}>Accuracy: {accuracy}%</Text>
+        </View>
+      )}
+      {!isGameOver && (
+        <View style={styles.wordsContainer}>
+          {words.map((word, index) => {
+            const isHighlighted = index === highlightIndex;
+            const isCompleted =
+              index < highlightIndex ||
+              (index === highlightIndex && highlightLetters.length === word.length);
 
-          return (
-            <Text key={index} style={[styles.word, isCompleted && styles.wordCompleted]}>
-              {word.split('').map((letter, letterIndex) => {
-                const isCorrect = isHighlighted && letterIndex < highlightLetters.length;
-                const isHighlightLetter = isHighlighted && letterIndex === highlightLetters.length;
+            return (
+              <Text key={index} style={[styles.word, isCompleted && styles.wordCompleted]}>
+                {word.split('').map((letter, letterIndex) => {
+                  const isCorrect = isHighlighted && letterIndex < highlightLetters.length;
+                  const isHighlightLetter = isHighlighted && letterIndex === highlightLetters.length;
 
-                return (
-                  <Text
-                    key={letterIndex}
-                    style={[
-                      styles.letter,
-                      isCorrect && styles.correct,
-                      isHighlightLetter && styles.highlight,
-                    ]}
-                  >
-                    {letter}
-                  </Text>
-                );
-              })}
-              {' '}
-            </Text>
-          );
-        })}
-      </View>
-      <Keyboard onPress={handleKeyPress} />
+                  return (
+                    <Text
+                      key={letterIndex}
+                      style={[
+                        styles.letter,
+                        isCorrect && styles.correct,
+                        isHighlightLetter && styles.highlight,
+                      ]}
+                    >
+                      {letter}
+                    </Text>
+                  );
+                })}
+                {' '}
+              </Text>
+            );
+          })}
+        </View>
+      )}
+      {isGameOver && (
+        <View style={styles.gameOverContainer}>
+          <Text style={styles.gameOverText}>Game Over</Text>
+          <Text style={styles.scoreText}>Score: {score}</Text>
+          <Text style={styles.scoreText}>WPM: {wpm}</Text>
+          <Text style={styles.scoreText}>Accuracy: {accuracy}%</Text>
+        </View>
+      )}
+      {showKeyboard && (
+        <Keyboard onPress={handleKeyPress} />
+      )}
     </View>
   );
 };
 
 export default Play;
-
-
-
 
 
 

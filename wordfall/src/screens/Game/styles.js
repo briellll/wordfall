@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
     marginTop: 16,
   },
   word: {
-    fontSize: 26, // Tamanho das palavras aumentado para 18
+    fontSize: 26, // Tamanho das palavras aumentado para 26
     marginBottom: 8,
     color: 'white',
   },
@@ -58,5 +58,30 @@ export const styles = StyleSheet.create({
   characterCurrent: {
     backgroundColor: '#09d3ac',
     paddingHorizontal: 8,
+  },
+  countdownText: {
+    fontSize: 70,
+    color: '#0ad3ab',
+    marginBottom: 16,
+    fontWeight: 'bold',
+  },
+  countdownHighlight: {
+    fontSize: 64,
+    color: '#0ad3ab',
+  },
+  timerText: {
+    fontSize: 70,
+    color: '#0ad3ab',
+    marginBottom: 16,
+  },
+  gameOverContainer: {
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  gameOverText: {
+    fontSize: 32,
+    color: '#ff4444',
+    marginBottom: 16,
+    fontWeight: 'bold',
   },
 });
