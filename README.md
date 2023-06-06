@@ -1,2 +1,2 @@
-# wordfall
+# wortyper
  jogo de digitação
