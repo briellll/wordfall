@@ -1,33 +1,86 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, SafeAreaView } from 'react-native';
+import { getFirestore, collection, getDocs, doc, collectionGroup } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './styles';
 
 const Score = () => {
-  const [activeTab, setActiveTab] = React.useState('local');
+  const [activeTab, setActiveTab] = useState('local');
+  const [localScores, setLocalScores] = useState([]);
+  const [globalScores, setGlobalScores] = useState([]);
+  const [userId, setUserId] = useState(null); // Estado para armazenar o ID do usuário atual
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
 
-  const localScores = [
-    { nick: 'Nick1', wpm: 100, accuracy: '95%', score: 500 },
-    { nick: 'Nick2', wpm: 90, accuracy: '85%', score: 400 },
-    { nick: 'Nick3', wpm: 80, accuracy: '75%', score: 300 },
-    { nick: 'Nick4', wpm: 70, accuracy: '65%', score: 200 },
-    { nick: 'Nick5', wpm: 60, accuracy: '55%', score: 100 },
-  ];
+  useEffect(() => {
+    const fetchLocalScores = async () => {
+      try {
+        const firestore = getFirestore();
 
-  const globalScores = [
-    { nick: 'Nick1', wpm: 200, accuracy: '98%', score: 1500 },
-    { nick: 'Nick2', wpm: 180, accuracy: '96%', score: 1400 },
-    { nick: 'Nick3', wpm: 160, accuracy: '94%', score: 1300 },
-    { nick: 'Nick4', wpm: 140, accuracy: '92%', score: 1200 },
-    { nick: 'Nick5', wpm: 120, accuracy: '90%', score: 1100 },
-  ];
+        // Obtém o ID do documento específico do usuário atual da AsyncStorage
+        const storedUserId = await AsyncStorage.getItem('userId');
+        setUserId(storedUserId);
+
+        const scoresSnapshot = await getDocs(collection(firestore, 'teste', storedUserId, 'pontuacoes'));
+
+        const scores = scoresSnapshot.docs.map((doc) => {
+          const data = doc.data();
+          const average = (data.wpm + data.accuracy + data.score) / 3;
+          return { ...data, average };
+        });
+
+        scores.sort((a, b) => b.average - a.average); // Ordena as pontuações com base na média (da maior para a menor)
+
+        setLocalScores(scores);
+      } catch (error) {
+        console.error('Erro ao obter as pontuações locais:', error);
+      }
+    };
+
+
+    const fetchGlobalScores = async () => {
+      try {
+        const firestore = getFirestore();
+        const scoresSnapshot = await getDocs(collectionGroup(firestore, 'pontuacoes'));
+
+        // Objeto para armazenar as pontuações máximas por usuário
+        const userScores = {};
+
+        scoresSnapshot.docs.forEach((doc) => {
+          const data = doc.data();
+          const userId = doc.ref.parent.parent.id; // Obtém o ID do usuário a partir do documento
+
+          // Verifica se já existe uma pontuação máxima para o usuário
+          if (userScores[userId]) {
+            // Compara a pontuação atual com a pontuação máxima existente
+            if (data.score > userScores[userId].score) {
+              userScores[userId] = data; // Atualiza a pontuação máxima
+            }
+          } else {
+            userScores[userId] = data; // Define a pontuação como a máxima inicial
+          }
+        });
+
+        const scores = Object.values(userScores); // Converte o objeto de pontuações em uma matriz de pontuações
+
+        setGlobalScores(scores);
+      } catch (error) {
+        console.error('Erro ao obter as pontuações globais:', error);
+      }
+    };
+
+    if (activeTab === 'local') {
+      fetchLocalScores();
+    } else if (activeTab === 'global') {
+      fetchGlobalScores();
+    }
+  }, [activeTab]);
 
   const renderScoreItem = ({ item }) => (
     <View style={styles.scoreItem}>
-      <Text style={styles.scoreText}>{item.nick}</Text>
+      <Text style={styles.scoreText}>{item.nickname}</Text>
       <Text style={styles.scoreText}>{item.wpm}</Text>
       <Text style={styles.scoreText}>{item.accuracy}</Text>
       <Text style={styles.scoreText}>{item.score}</Text>
@@ -87,6 +140,5 @@ const Score = () => {
     </SafeAreaView>
   );
 };
-
 
 export default Score;
