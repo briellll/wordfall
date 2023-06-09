@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { KeyboardAvoidingView, View, Text, TouchableOpacity, Image, TextInput, Alert } from 'react-native';
 import styles from './styles';
 import logoIcon from '../../../assets/user.png';
-import AsyncStorage from '@react-native-async-storage/async-storage'; // Importe AsyncStorage
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { initializeApp } from 'firebase/app';
@@ -28,10 +28,16 @@ export default function Login() {
         // Salvar ID do usuário e nickname no Cloud Firestore
         const firestore = getFirestore();
         const userRef = doc(collection(firestore, "teste"), user.uid);
+        const scoresCollection = collection(userRef, "pontuacoes"); // Subcoleção de pontuações do jogador
+
         setDoc(userRef, {
           id: user.uid,
           nickname: nickname
         });
+
+        // Criar um documento vazio com ID aleatório na subcoleção de pontuações
+        const newScoreDocRef = doc(scoresCollection);
+        setDoc(newScoreDocRef, {});
 
         // Exibir alerta de conta criada com sucesso
         Alert.alert(
