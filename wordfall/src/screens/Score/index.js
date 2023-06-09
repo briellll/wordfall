@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, SafeAreaView } from 'react-native';
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, getDocs, doc, collectionGroup } from 'firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './styles';
 
 const Score = () => {
   const [activeTab, setActiveTab] = useState('local');
   const [localScores, setLocalScores] = useState([]);
   const [globalScores, setGlobalScores] = useState([]);
+  const [userId, setUserId] = useState(null); // Estado para armazenar o ID do usuário atual
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -16,14 +18,27 @@ const Score = () => {
     const fetchLocalScores = async () => {
       try {
         const firestore = getFirestore();
-        const scoresSnapshot = await getDocs(collection(firestore, 'teste'));
 
-        const scores = scoresSnapshot.docs.map((doc) => doc.data());
+        // Obtém o ID do documento específico do usuário atual da AsyncStorage
+        const storedUserId = await AsyncStorage.getItem('userId');
+        setUserId(storedUserId);
+
+        const scoresSnapshot = await getDocs(collection(firestore, 'teste', storedUserId, 'pontuacoes'));
+
+        const scores = scoresSnapshot.docs.map((doc) => {
+          const data = doc.data();
+          const average = (data.wpm + data.accuracy + data.score) / 3;
+          return { ...data, average };
+        });
+
+        scores.sort((a, b) => b.average - a.average); // Ordena as pontuações com base na média (da maior para a menor)
+
         setLocalScores(scores);
       } catch (error) {
         console.error('Erro ao obter as pontuações locais:', error);
       }
     };
+
 
     const fetchGlobalScores = async () => {
       try {

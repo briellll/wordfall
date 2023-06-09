@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { generateWords } from '../../utils/word/random';
 import Keyboard from '../../utils/keyboard';
 import { styles } from './styles';
-import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
+import { getFirestore, collection, doc, setDoc, getDoc } from 'firebase/firestore';
 
 const Play = () => {
   const [words, setWords] = useState([]);
@@ -20,6 +20,7 @@ const Play = () => {
   const [gameTimer, setGameTimer] = useState(5);
   const [isGameOver, setIsGameOver] = useState(false);
   const [showKeyboard, setShowKeyboard] = useState(true);
+  const [userNickname, setUserNickname] = useState('');
 
   useEffect(() => {
     setWords(generateWords(5));
@@ -97,30 +98,52 @@ const Play = () => {
   };
 
   useEffect(() => {
+    const fetchUserNickname = async () => {
+      const userId = await AsyncStorage.getItem('userId');
+      const firestore = getFirestore();
+      const userRef = doc(collection(firestore, 'teste'), userId);
+
+      try {
+        const userDocSnap = await getDoc(userRef);
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          setUserNickname(userData.nickname);
+        }
+      } catch (error) {
+        console.error('Erro ao obter o nickname do usuário:', error);
+      }
+    };
+
+    fetchUserNickname();
+  }, []);
+
+  useEffect(() => {
     const saveScores = async () => {
       if (isGameOver) {
-        // Obtém o ID salvo localmente
         const userId = await AsyncStorage.getItem('userId');
 
         try {
           const firestore = getFirestore();
           const userRef = doc(collection(firestore, 'teste'), userId);
+          const scoresCollection = collection(userRef, 'pontuacoes');
 
-          await setDoc(userRef, {
+          const newScoreDocRef = doc(scoresCollection);
+          await setDoc(newScoreDocRef, {
+            nickname: userNickname,
             score: score.toString(),
             wpm: wpm.toString(),
             accuracy: accuracy.toString(),
           });
 
-          console.log('Pontuações salvas no Firestore com sucesso!');
+          console.log('Pontuação salva no Firestore com sucesso!');
         } catch (error) {
-          console.error('Erro ao salvar as pontuações no Firestore:', error);
+          console.error('Erro ao salvar a pontuação no Firestore:', error);
         }
       }
     };
 
     saveScores();
-  }, [isGameOver, score, wpm, accuracy]);
+  }, [isGameOver, score, wpm, accuracy, userNickname]);
 
   return (
     <View style={styles.container}>
