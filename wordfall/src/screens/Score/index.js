@@ -45,31 +45,29 @@ const Score = () => {
         const firestore = getFirestore();
         const scoresSnapshot = await getDocs(collectionGroup(firestore, 'pontuacoes'));
 
-        // Objeto para armazenar as pontuações máximas por usuário
         const userScores = {};
 
         scoresSnapshot.docs.forEach((doc) => {
           const data = doc.data();
-          const userId = doc.ref.parent.parent.id; // Obtém o ID do usuário a partir do documento
+          const average = (data.wpm + data.accuracy + data.score) / 3;
+          const userId = doc.ref.parent.parent.id;
 
-          // Verifica se já existe uma pontuação máxima para o usuário
-          if (userScores[userId]) {
-            // Compara a pontuação atual com a pontuação máxima existente
-            if (data.score > userScores[userId].score) {
-              userScores[userId] = data; // Atualiza a pontuação máxima
-            }
-          } else {
-            userScores[userId] = data; // Define a pontuação como a máxima inicial
+          if (!userScores[userId] || average > userScores[userId].average) {
+            userScores[userId] = {
+              average,
+              data
+            };
           }
         });
 
-        const scores = Object.values(userScores); // Converte o objeto de pontuações em uma matriz de pontuações
-
+        const scores = Object.values(userScores).map((userScore) => userScore.data);
         setGlobalScores(scores);
+
       } catch (error) {
         console.error('Erro ao obter as pontuações globais:', error);
       }
     };
+
 
     if (activeTab === 'local') {
       fetchLocalScores();

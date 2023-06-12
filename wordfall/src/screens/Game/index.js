@@ -26,6 +26,7 @@ const Play = () => {
     setWords(generateWords(5));
   }, []);
 
+  // temporizador de contagem regressiva
   useEffect(() => {
     let countdownTimer;
 
@@ -43,6 +44,7 @@ const Play = () => {
     return () => clearTimeout(countdownTimer);
   }, [countdown]);
 
+    // temporizador do jogo
   useEffect(() => {
     let gameTimerInterval;
 
@@ -60,6 +62,7 @@ const Play = () => {
     return () => clearInterval(gameTimerInterval);
   }, [gameTimer, isGameStarted]);
 
+  // Manipulador de pressionar tecla
   const handleKeyPress = (key) => {
     if (!isGameStarted) {
       return; // Ignorar as teclas pressionadas até o início do jogo
@@ -97,6 +100,7 @@ const Play = () => {
     setWpm(((wordCount + 1) / durationInMinutes).toFixed(2));
   };
 
+    // Obter nickname do usuário
   useEffect(() => {
     const fetchUserNickname = async () => {
       const userId = await AsyncStorage.getItem('userId');
@@ -117,6 +121,7 @@ const Play = () => {
     fetchUserNickname();
   }, []);
 
+    // Salvar pontuações no Firestore
   useEffect(() => {
     const saveScores = async () => {
       if (isGameOver) {
@@ -145,6 +150,7 @@ const Play = () => {
     saveScores();
   }, [isGameOver, score, wpm, accuracy, userNickname]);
 
+    // Renderização do componente
   return (
     <View style={styles.container}>
       {countdown >= 0 && (
