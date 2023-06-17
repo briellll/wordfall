@@ -8,7 +8,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } f
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../config';
 import { useNavigation } from '@react-navigation/native';
-import { getFirestore, collection, doc, setDoc } from 'firebase/firestore';
+import { getFirestore, collection, doc, setDoc, query, where, getDocs } from 'firebase/firestore';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -20,38 +20,48 @@ export default function Login() {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  const handleCreateAccount = () => {
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        const user = userCredential.user;
+  const handleCreateAccount = async () => {
+    try {
+      // Verificar se o nickname já está em uso no Firestore (case-insensitive)
+      const lowercaseNickname = nickname.toLowerCase();
+      const firestore = getFirestore();
+      const usersRef = collection(firestore, "teste");
+      const nicknameQuery = query(usersRef, where("nickname", "==", lowercaseNickname));
+      const nicknameSnapshot = await getDocs(nicknameQuery);
+      if (!nicknameSnapshot.empty) {
+        Alert.alert('Erro', 'O nickname já está em uso.');
+        return;
+      }
 
-        // Salvar ID do usuário e nickname no Cloud Firestore
-        const firestore = getFirestore();
-        const userRef = doc(collection(firestore, "teste"), user.uid);
-        const scoresCollection = collection(userRef, "pontuacoes"); // Subcoleção de pontuações do jogador
+      // Criar a conta de usuário no Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-        setDoc(userRef, {
-          id: user.uid,
-          nickname: nickname
-        });
+      // Salvar ID do usuário e nickname em letra minúscula no Cloud Firestore
+      const userRef = doc(collection(firestore, "teste"), user.uid);
+      const scoresCollection = collection(userRef, "pontuacoes"); // Subcoleção de pontuações do jogador
 
-        // Criar um documento vazio com ID aleatório na subcoleção de pontuações
-        const newScoreDocRef = doc(scoresCollection);
-        setDoc(newScoreDocRef, {});
-
-        // Exibir alerta de conta criada com sucesso
-        Alert.alert(
-          'Sucesso',
-          'Sua conta foi criada com sucesso!',
-          [
-            { text: 'Voltar para o Login', onPress: () => setIsLoginScreen(true) }
-          ]
-        );
-      })
-      .catch(error => {
-        console.log(error);
-        Alert.alert(error.message);
+      setDoc(userRef, {
+        id: user.uid,
+        nickname: lowercaseNickname // Salvar o nickname em letras minúsculas
       });
+
+      // Criar um documento vazio com ID aleatório na subcoleção de pontuações
+      const newScoreDocRef = doc(scoresCollection);
+      setDoc(newScoreDocRef, {});
+
+      // Exibir alerta de conta criada com sucesso
+      Alert.alert(
+        'Sucesso',
+        'Sua conta foi criada com sucesso!',
+        [
+          { text: 'Voltar para o Login', onPress: () => setIsLoginScreen(true) }
+        ]
+      );
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Erro', error.message);
+    }
   };
 
   const handleSign = () => {
@@ -72,7 +82,7 @@ export default function Login() {
       })
       .catch(error => {
         console.log(error);
-        Alert.alert(error.message);
+        Alert.alert('Erro', error.message);
       });
   };
 
