@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { generateWords } from '../../utils/word/random';
 import Keyboard from '../../utils/keyboard';
 import { styles } from './styles';
-import { getFirestore, collection, doc, setDoc, getDoc } from 'firebase/firestore';
+import { getFirestore, collection, doc, setDoc, getDoc, deleteDoc, query, where, getDocs } from 'firebase/firestore';
 
 const Play = () => {
   const [words, setWords] = useState([]);
@@ -44,7 +44,7 @@ const Play = () => {
     return () => clearTimeout(countdownTimer);
   }, [countdown]);
 
-    // temporizador do jogo
+  // temporizador do jogo
   useEffect(() => {
     let gameTimerInterval;
 
@@ -100,7 +100,7 @@ const Play = () => {
     setWpm(((wordCount + 1) / durationInMinutes).toFixed(2));
   };
 
-    // Obter nickname do usuário
+  // Obter nickname do usuário
   useEffect(() => {
     const fetchUserNickname = async () => {
       const userId = await AsyncStorage.getItem('userId');
@@ -121,36 +121,48 @@ const Play = () => {
     fetchUserNickname();
   }, []);
 
-    // Salvar pontuações no Firestore
-  useEffect(() => {
-    const saveScores = async () => {
-      if (isGameOver) {
-        const userId = await AsyncStorage.getItem('userId');
+ // Salvar pontuações no Firestore
+ useEffect(() => {
+  const saveScores = async () => {
+    if (isGameOver) {
+      const userId = await AsyncStorage.getItem('userId');
 
-        try {
-          const firestore = getFirestore();
-          const userRef = doc(collection(firestore, 'teste'), userId);
-          const scoresCollection = collection(userRef, 'pontuacoes');
+      try {
+        const firestore = getFirestore();
+        const userRef = doc(collection(firestore, 'teste'), userId);
+        const scoresCollection = collection(userRef, 'pontuacoes');
 
-          const newScoreDocRef = doc(scoresCollection);
-          await setDoc(newScoreDocRef, {
-            nickname: userNickname,
-            score: score.toString(),
-            wpm: wpm.toString(),
-            accuracy: accuracy.toString(),
-          });
+        const newScoreDocRef = doc(scoresCollection);
+        await setDoc(newScoreDocRef, {
+          nickname: userNickname,
+          score: score.toString(),
+          wpm: wpm.toString(),
+          accuracy: accuracy.toString(),
+        });
 
-          console.log('Pontuação salva no Firestore com sucesso!');
-        } catch (error) {
-          console.error('Erro ao salvar a pontuação no Firestore:', error);
-        }
+        console.log('Pontuação salva no Firestore com sucesso!');
+
+        // Vasculhar e excluir arquivos vazios
+        const querySnapshot = await getDocs(scoresCollection);
+        querySnapshot.forEach(async (doc) => {
+          const scoreData = doc.data();
+          if (!scoreData.nickname || scoreData.nickname.trim() === '') {
+            // Arquivo vazio encontrado, exclua-o
+            await deleteDoc(doc.ref);
+            console.log('Arquivo vazio excluído:', doc.id);
+          }
+        });
+      } catch (error) {
+        console.error('Erro ao salvar a pontuação no Firestore:', error);
       }
-    };
+    }
+  };
 
-    saveScores();
-  }, [isGameOver, score, wpm, accuracy, userNickname]);
+  saveScores();
+}, [isGameOver, score, wpm, accuracy, userNickname]);
 
-    // Renderização do componente
+
+  // Renderização do componente
   return (
     <View style={styles.container}>
       {countdown >= 0 && (

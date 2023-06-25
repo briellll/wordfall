@@ -8,7 +8,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } f
 import { initializeApp } from 'firebase/app';
 import { firebaseConfig } from '../../config';
 import { useNavigation } from '@react-navigation/native';
-import { getFirestore, collection, doc, setDoc, query, where, getDocs } from 'firebase/firestore';
+import { getFirestore, collection, doc, setDoc, query, where, getDocs, deleteDoc } from 'firebase/firestore';
 
 export default function Login() {
   const [email, setEmail] = useState('');
